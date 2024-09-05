@@ -1,0 +1,233 @@
+<!-- Nama : Sarah Teguh Kinanti Situmeang -->
+<!-- NIM : 24060121130049 -->
+<!-- Lab : B2 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Tambah Data Produk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            width: 400px;
+            border: 1px solid #000;
+            padding: 20px;
+            margin: auto;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            width: 120px;
+            margin-right: 10px;
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            flex: 1;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .form-group.radio-group{
+            display: flex;
+            align-items: center;
+        }
+        .form-group.checkbox-group {
+            display: flex;           
+        }
+        .form-group.radio-group label{
+            width: 120px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        .form-group.checkbox-group label {
+            flex-direction: column;
+            width: 120px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        .form-group.captcha {
+            display: flex;
+            align-items: center;
+        }
+        .form-group.captcha input[type="text"] {
+            width: 60px;
+            margin-left: 10px;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function updateSubKategori() {
+            var kategori = document.getElementById("kategori").value;
+            var subKategori = document.getElementById("sub_kategori");
+
+            // Clear existing options
+            subKategori.innerHTML = '';
+
+            if (kategori === "Baju") {
+                addOption(subKategori, "Baju Pria", "Baju Pria");
+                addOption(subKategori, "Baju Wanita", "Baju Wanita");
+                addOption(subKategori, "Baju Anak", "Baju Anak");
+            } else if (kategori === "Elektronik") {
+                addOption(subKategori, "Mesin Cuci", "Mesin Cuci");
+                addOption(subKategori, "Kulkas", "Kulkas");
+                addOption(subKategori, "AC", "AC");
+            } else if (kategori === "Alat Tulis") {
+                addOption(subKategori, "Kertas", "Kertas");
+                addOption(subKategori, "Map", "Map");
+                addOption(subKategori, "Pulpen", "Pulpen");
+            }
+        }
+
+        function addOption(selectElement, text, value) {
+            var option = document.createElement("option");
+            option.text = text;
+            option.value = value;
+            selectElement.add(option);
+        }
+
+        function generateCaptcha() {
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var captchaLength = 5;
+            var captcha = '';
+
+            for (var i = 0; i < captchaLength; i++) {
+                var randomIndex = Math.floor(Math.random() * characters.length);
+                captcha += characters.charAt(randomIndex);
+            }
+
+            document.getElementById("captcha_value").value = captcha;
+        }
+
+        function validateForm() {
+            var grosirYa = document.getElementById("grosir_ya").checked;
+            var grosirHarga = document.getElementById("harga_grosir").value;
+            var jasaKirim = document.querySelectorAll('input[name="jasa_kirim"]:checked');
+            var captchaInput = document.getElementById("captcha").value;
+            var captchaValue = document.getElementById("captcha_value").value;
+            
+            // Validasi untuk Grosir
+            if (grosirYa && grosirHarga === "") {
+                alert("Harga grosir harus diisi jika Grosir dipilih 'Ya'.");
+                return false;
+            }
+            if (!grosirYa) {
+                document.getElementById("harga_grosir").value = "";
+            }
+
+            // Validasi untuk Jasa Kirim
+            if (jasaKirim.length < 3) {
+                alert("Minimal 3 jasa kirim harus dipilih.");
+                return false;
+            }
+
+            //Validasi Captcha
+            if (captchaInput !== captchaValue){
+                alert("Captcha yang dimasukkan salah. Silakan coba lagi.");
+                return false;
+            }
+
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            //Memanggil generateCaptcha ketika halaman dimuat
+            generateCaptcha();
+
+            // Mengatur event listener untuk grosir
+            document.getElementById("grosir_ya").addEventListener('change', function(){
+                document.getElementById("harga_grosir").disabled = false;
+            });
+            document.getElementById("grosir_tidak").addEventListener('change', function(){
+                document.getElementById("harga_grosir").disabled = true;
+            });
+        });
+
+    </script>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Form Tambah Data Produk</h2>
+    <form onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="nama_produk">Nama Produk</label>
+            <input type="text" id="nama_produk" name="nama_produk" required minlength="5" maxlength="30">
+        </div>
+        <div class="form-group">
+            <label for="deskripsi_produk">Deskripsi</label>
+            <textarea id="deskripsi_produk" name="deskripsi_produk" required minlength="5" maxlength="100"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="kategori">Kategori</label>
+            <select id="kategori" name="kategori" required onchange="updateSubKategori()">
+                <option value="">--Pilih Kategori--</option>
+                <option value="Baju">Baju</option>
+                <option value="Elektronik">Elektronik</option>
+                <option value="Alat Tulis">Alat Tulis</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sub_kategori">Sub Kategori</label>
+            <select id="sub_kategori" name="sub_kategori" required>
+                <option value="">--Pilih Sub Kategori--</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="harga_satuan">Harga Satuan</label>
+            <input type="text" id="harga_satuan" name="harga_satuan" required pattern="\d*">
+        </div>
+        <div class="form-group radio-group">
+            <label>Grosir</label>
+            <div>
+                <input type="radio" id="grosir_ya" name="grosir" value="Ya" onclick="document.getElementById('harga_grosir').disabled = false;">
+                <label for="grosir_ya">Ya</label><br>
+                <input type="radio" id="grosir_tidak" name="grosir" value="Tidak" onclick="document.getElementById('harga_grosir').disabled = true;">
+                <label for="grosir_tidak">Tidak</label><br>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="harga_grosir">Harga Grosir</label>
+            <input type="text" id="harga_grosir" name="harga_grosir" pattern="\d*">
+        </div>
+        <div class="form-group checkbox-group">
+            <label>Jasa Kirim</label>
+            <div>
+                <input type="checkbox" id="jne" name="jasa_kirim" value="JNE">
+                <label for="jne">JNE</label><br>
+                <input type="checkbox" id="tiki" name="jasa_kirim" value="TIKI">
+                <label for="tiki">TIKI</label><br>
+                <input type="checkbox" id="sicepat" name="jasa_kirim" value="SiCepat">
+                <label for="sicepat">SiCepat</label><br>
+                <input type="checkbox" id="ninja_express" name="jasa_kirim" value="Ninja Express">
+                <label for="ninja_express">Ninja Express</label><br>
+                <input type="checkbox" id="wahana" name="jasa_kirim" value="Wahana">
+                <label for="wahana">Wahana</label><br>
+            </div>
+        </div>
+        <div class="form-group captcha">
+            <label for="captcha">Captcha</label>
+            <input type="text" id="captcha_value" readonly value="">
+            <input type="text" id="captcha" name="captcha" required pattern="[A-Za-z0-9]{5}">
+        </div>
+        <div class="buttons">
+            <button type="submit">Submit</button>
+            <button type="reset">Reset</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
